@@ -29,8 +29,22 @@ Future addTask({
 
   await loadTasks();
 }
-  Future editTask(String id, String title) async {
-  await controller.service.editTask(id, title);
+Future<void> editTask(
+  String id,
+  String title, {
+  String? note,
+  int? priority,
+  DateTime? dueDate,
+}) async {
+
+  await controller.editTask(
+    id,
+    title,
+    note: note,
+    priority: priority,
+    dueDate: dueDate,
+  );
+
   await loadTasks();
 }
 

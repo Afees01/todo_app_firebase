@@ -3,10 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/providers/task_providers.dart';
+import 'package:todo_app/views/auth/authgate.dart';
 import 'package:todo_app/views/auth/login_view.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginView(),
+      home: AuthGate(),
     );
   }
 }

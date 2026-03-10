@@ -31,6 +31,22 @@ Future addTask({
     dueDate: dueDate,
   );
 }
+
+Future editTask(
+  String id,
+  String title, {
+  String? note,
+  int? priority,
+  DateTime? dueDate,
+}) {
+  return service.editTask(
+    id,
+    title,
+    note: note,
+    priority: priority,
+    dueDate: dueDate,
+  );
+}
   Future deleteTask(String id) => service.deleteTask(id);
 
   Future toggleTask(String id, bool value) =>
