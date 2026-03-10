@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/controllers/auth_controller.dart';
@@ -20,6 +21,7 @@ class _HomeViewState extends State<HomeView>
   late Animation<double> _fadeAnim;
 
   final _authController = AuthController();
+  final user = FirebaseAuth.instance.currentUser;
   bool _isLoggingOut = false;
 
   int _filter = 0;
@@ -30,8 +32,7 @@ class _HomeViewState extends State<HomeView>
     super.initState();
     _animController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 600));
-    _fadeAnim =
-        CurvedAnimation(parent: _animController, curve: Curves.easeOut);
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
     _animController.forward();
 
     Future.microtask(
@@ -104,8 +105,7 @@ class _HomeViewState extends State<HomeView>
                         backgroundColor: AppColors.error,
                         foregroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.lg)),
+                            borderRadius: BorderRadius.circular(AppRadius.lg)),
                         elevation: 0,
                       ),
                       child: const Text('Sign Out',
@@ -142,11 +142,11 @@ class _HomeViewState extends State<HomeView>
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TaskProvider>(context);
-    final tasks    = provider.tasks;
+    final tasks = provider.tasks;
 
-    final total    = tasks.length;
-    final done     = tasks.where((t) => t.completed).length;
-    final pending  = total - done;
+    final total = tasks.length;
+    final done = tasks.where((t) => t.completed).length;
+    final pending = total - done;
     final progress = total == 0 ? 0.0 : done / total;
 
     final filtered = tasks.where((t) {
@@ -174,8 +174,15 @@ class _HomeViewState extends State<HomeView>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('My Tasks',
-                              style: AppTextStyles.headline),
+                          const Text('My Tasks', style: AppTextStyles.headline),
+                          const SizedBox(height: 4),
+                          Text(
+                            user?.email ?? "Unknown user",
+                            style: const TextStyle(
+                              color: AppColors.secondary,
+                              fontSize: 12,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           Text(
                             '$pending task${pending == 1 ? '' : 's'} remaining',
@@ -203,8 +210,7 @@ class _HomeViewState extends State<HomeView>
                             ? const Padding(
                                 padding: EdgeInsets.all(12),
                                 child: CircularProgressIndicator(
-                                    color: AppColors.error,
-                                    strokeWidth: 2),
+                                    color: AppColors.error, strokeWidth: 2),
                               )
                             : const Icon(Icons.logout_rounded,
                                 color: AppColors.error, size: 20),
@@ -217,16 +223,14 @@ class _HomeViewState extends State<HomeView>
 
               // ── Progress card ────────────────────────────
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 child: AppCard(
                   glowColor: AppColors.accent,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text("Today's Progress",
                               style: AppTextStyles.caption),
@@ -247,8 +251,8 @@ class _HomeViewState extends State<HomeView>
                           value: progress,
                           minHeight: 6,
                           backgroundColor: AppColors.inputBorder,
-                          valueColor: const AlwaysStoppedAnimation(
-                              AppColors.accent),
+                          valueColor:
+                              const AlwaysStoppedAnimation(AppColors.accent),
                         ),
                       ),
                       const SizedBox(height: 14),
@@ -278,8 +282,7 @@ class _HomeViewState extends State<HomeView>
 
               // ── Filter tabs ──────────────────────────────
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 child: Row(
                   children: List.generate(_filters.length, (i) {
                     final active = _filter == i;
@@ -287,16 +290,13 @@ class _HomeViewState extends State<HomeView>
                       onTap: () => setState(() => _filter = i),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        margin: EdgeInsets.only(
-                            right: i < 2 ? AppSpacing.sm : 0),
+                        margin:
+                            EdgeInsets.only(right: i < 2 ? AppSpacing.sm : 0),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 18, vertical: 8),
                         decoration: BoxDecoration(
-                          color: active
-                              ? AppColors.accent
-                              : AppColors.card,
-                          borderRadius:
-                              BorderRadius.circular(AppRadius.xxl),
+                          color: active ? AppColors.accent : AppColors.card,
+                          borderRadius: BorderRadius.circular(AppRadius.xxl),
                           border: Border.all(
                             color: active
                                 ? AppColors.accent
@@ -306,13 +306,10 @@ class _HomeViewState extends State<HomeView>
                         child: Text(
                           _filters[i],
                           style: TextStyle(
-                            color: active
-                                ? AppColors.bg
-                                : AppColors.secondary,
+                            color: active ? AppColors.bg : AppColors.secondary,
                             fontSize: 13,
-                            fontWeight: active
-                                ? FontWeight.w700
-                                : FontWeight.w400,
+                            fontWeight:
+                                active ? FontWeight.w700 : FontWeight.w400,
                           ),
                         ),
                       ),
@@ -328,10 +325,7 @@ class _HomeViewState extends State<HomeView>
                     ? _EmptyState(filter: _filters[_filter])
                     : ListView.separated(
                         padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.lg,
-                            0,
-                            AppSpacing.lg,
-                            AppSpacing.xl),
+                            AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.xl),
                         itemCount: filtered.length,
                         separatorBuilder: (_, __) =>
                             const SizedBox(height: AppSpacing.sm),
@@ -348,8 +342,7 @@ class _HomeViewState extends State<HomeView>
           ),
         ),
       ),
-      floatingActionButton:
-          _AddTaskFAB(onTap: () => _openAddTask(provider)),
+      floatingActionButton: _AddTaskFAB(onTap: () => _openAddTask(provider)),
     );
   }
 }
@@ -379,10 +372,8 @@ class _AnimatedTaskTileState extends State<_AnimatedTaskTile>
     _c = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 400));
     _fade = CurvedAnimation(parent: _c, curve: Curves.easeOut);
-    _slide =
-        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
-            .animate(
-                CurvedAnimation(parent: _c, curve: Curves.easeOut));
+    _slide = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _c, curve: Curves.easeOut));
     Future.delayed(Duration(milliseconds: 60 * widget.index), () {
       if (mounted) _c.forward();
     });
@@ -397,8 +388,7 @@ class _AnimatedTaskTileState extends State<_AnimatedTaskTile>
   @override
   Widget build(BuildContext context) => FadeTransition(
         opacity: _fade,
-        child:
-            SlideTransition(position: _slide, child: widget.child),
+        child: SlideTransition(position: _slide, child: widget.child),
       );
 }
 
@@ -408,9 +398,7 @@ class _AnimatedTaskTileState extends State<_AnimatedTaskTile>
 
 class _StatChip extends StatelessWidget {
   const _StatChip(
-      {required this.label,
-      required this.value,
-      required this.color});
+      {required this.label, required this.value, required this.color});
   final String label;
   final String value;
   final Color color;
@@ -429,13 +417,11 @@ class _StatChip extends StatelessWidget {
           children: [
             Text(value,
                 style: TextStyle(
-                    color: color,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700)),
+                    color: color, fontSize: 20, fontWeight: FontWeight.w700)),
             const SizedBox(height: 2),
             Text(label,
-                style: const TextStyle(
-                    color: AppColors.secondary, fontSize: 11)),
+                style:
+                    const TextStyle(color: AppColors.secondary, fontSize: 11)),
           ],
         ),
       ),
