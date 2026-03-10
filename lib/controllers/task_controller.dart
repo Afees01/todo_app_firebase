@@ -18,8 +18,19 @@ class TaskController {
     return tasks;
   }
 
-  Future addTask(String title) => service.addTask(title);
-
+Future addTask({
+  required String title,
+  String? note,
+  int priority = 1,
+  DateTime? dueDate,
+}) {
+  return service.addTask(
+    title: title,
+    note: note,
+    priority: priority,
+    dueDate: dueDate,
+  );
+}
   Future deleteTask(String id) => service.deleteTask(id);
 
   Future toggleTask(String id, bool value) =>

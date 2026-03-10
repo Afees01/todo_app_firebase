@@ -14,10 +14,25 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future addTask(String title) async {
-    await controller.addTask(title);
-    await loadTasks();
-  }
+Future addTask({
+  required String title,
+  String? note,
+  int priority = 1,
+  DateTime? dueDate,
+}) async {
+  await controller.addTask(
+    title: title,
+    note: note,
+    priority: priority,
+    dueDate: dueDate,
+  );
+
+  await loadTasks();
+}
+  Future editTask(String id, String title) async {
+  await controller.service.editTask(id, title);
+  await loadTasks();
+}
 
   Future deleteTask(String id) async {
     await controller.deleteTask(id);
